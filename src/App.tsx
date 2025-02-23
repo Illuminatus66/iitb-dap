@@ -4,7 +4,7 @@ import HomeScreen from "./pages/HomeScreen";
 import ReportsScreen from "./pages/ReportsScreen";
 import DetailsScreen from './pages/DetailsScreen';
 
-function App() {
+const App = () => {
   return (
     <Router>
       <Routes>

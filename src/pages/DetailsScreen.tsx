@@ -1,4 +1,5 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
 import {
   Card,
   CardContent,
@@ -14,7 +15,8 @@ import {
 import FormattedTextDisplay from "../components/FormattedTextDisplay";
 import Header from "../components/Header";
 
-interface ReportDetails {
+interface ReportDetailsComplete {
+  _id: string;
   uid: string;
   name: string;
   is_audio_uploaded: boolean;
@@ -41,36 +43,12 @@ interface ReportDetails {
   response_time: string;
 }
 
-const reportDetails: ReportDetails = {
-  uid: "5_A_01",
-  name: "Aarav Sharma",
-  is_audio_uploaded: true,
-  is_report_generated: true,
-  file_id: "12345",
-  audio_type: "Ok",
-  decoded_text:
-    "he went out looking for the lost sheep he walked all the way back to the river at last ला as late in the night he found the sheep in a bush the bush was full of toll he got the sheep out and carried it home he was happy he showed he the sheep to his friends all of them were happy too",
-  no_words: 61,
-  no_del: 0,
-  del_details: "",
-  no_ins: 2,
-  ins_details: "20-late:ला as,51-the:he",
-  no_subs: 1,
-  subs_details: "36-thorns:toll",
-  no_miscue: 1,
-  no_corr: 60,
-  wcpm: 83,
-  speech_rate: 1.5,
-  pron_score: 0.96,
-  percent_attempt: 100,
-  audio_url: "",
-  story: "Sheep Story idk?",
-  request_time: "2025-02-19T06:46:23.179+00:00",
-  response_time: "2025-02-19T06:46:24.179+00:00",
-};
+const DetailsScreen = () => {
+  const location = useLocation();
+  const { reportDetails } = location.state as {
+    reportDetails: ReportDetailsComplete;
+  };
 
-export default function DetailsScreen() {
-  const responseTime = new Date(reportDetails.response_time);
   return (
     <div>
       <Header />
@@ -90,7 +68,9 @@ export default function DetailsScreen() {
             Story Name: {reportDetails.story}
           </Typography>
           <Typography variant="h6" fontWeight="bold">
-            Report generated on {responseTime.toLocaleDateString()} at {responseTime.toLocaleTimeString()} 
+            Report generated on{" "}
+            {new Date(reportDetails.response_time).toLocaleDateString("en-GB")} at{" "}
+            {new Date(reportDetails.response_time).toLocaleTimeString("en-GB")}
           </Typography>
         </CardContent>
       </Card>
@@ -126,18 +106,18 @@ export default function DetailsScreen() {
           <TableBody>
             <TableRow>
               <TableCell>
-                <Typography fontWeight="bold">Total Words</Typography>
+                <Typography sx={{fontWeight:"bold", fontSize: 15}}>Total Words</Typography>
               </TableCell>
               <TableCell>
-                <Typography fontWeight="bold">
+                <Typography sx={{fontWeight:"bold", fontSize: 15}}>
                   {reportDetails.no_words}
                 </Typography>
               </TableCell>
               <TableCell>
-                <Typography fontWeight="bold">Correct Words</Typography>
+                <Typography sx={{fontWeight:"bold", fontSize: 12}}> Number of Correct Words</Typography>
               </TableCell>
               <TableCell>
-                <Typography fontWeight="bold">
+                <Typography sx={{fontWeight:"bold", fontSize: 15}}>
                   {reportDetails.no_corr}
                 </Typography>
               </TableCell>
@@ -145,18 +125,18 @@ export default function DetailsScreen() {
 
             <TableRow>
               <TableCell>
-                <Typography fontWeight="bold">Miscues</Typography>
+                <Typography sx={{fontWeight:"bold", fontSize: 12}}>Number of Miscues</Typography>
               </TableCell>
               <TableCell>
-                <Typography fontWeight="bold">
+                <Typography sx={{fontWeight:"bold", fontSize: 15}}>
                   {reportDetails.no_miscue}
                 </Typography>
               </TableCell>
               <TableCell>
-                <Typography fontWeight="bold">Substituted Words</Typography>
+                <Typography sx={{fontWeight:"bold", fontSize: 12}}>Number of Substituted Words</Typography>
               </TableCell>
               <TableCell>
-                <Typography fontWeight="bold">
+                <Typography sx={{fontWeight:"bold", fontSize: 15}}>
                   {reportDetails.no_subs}
                 </Typography>
               </TableCell>
@@ -164,37 +144,35 @@ export default function DetailsScreen() {
 
             <TableRow>
               <TableCell>
-                <Typography fontWeight="bold">Insertions</Typography>
+                <Typography sx={{fontWeight:"bold", fontSize: 15}}>Insertions</Typography>
               </TableCell>
               <TableCell>
-                <Typography fontWeight="bold">
+                <Typography sx={{fontWeight:"bold", fontSize: 15}}>
                   {reportDetails.no_ins}
                 </Typography>
               </TableCell>
               <TableCell>
-                <Typography fontWeight="bold">WCPM</Typography>
+                <Typography sx={{fontWeight:"bold", fontSize: 12}}>Words Correct Per Minute</Typography>
               </TableCell>
               <TableCell>
-                <Typography fontWeight="bold">
-                  {reportDetails.wcpm}
-                </Typography>
+                <Typography sx={{fontWeight:"bold", fontSize: 15}}>{reportDetails.wcpm}</Typography>
               </TableCell>
             </TableRow>
 
             <TableRow>
               <TableCell>
-                <Typography fontWeight="bold">Speaking Rate</Typography>
+                <Typography sx={{fontWeight:"bold", fontSize: 15}}>Speaking Rate</Typography>
               </TableCell>
               <TableCell>
-                <Typography fontWeight="bold">
+                <Typography sx={{fontWeight:"bold", fontSize: 15}}>
                   {reportDetails.speech_rate}syll/sec
                 </Typography>
               </TableCell>
               <TableCell>
-                <Typography fontWeight="bold">Pronunciation Score</Typography>
+                <Typography sx={{fontWeight:"bold", fontSize: 12}}>Pronunciation Score</Typography>
               </TableCell>
               <TableCell>
-                <Typography fontWeight="bold">
+                <Typography sx={{fontWeight:"bold", fontSize: 15}}>
                   {reportDetails.pron_score}
                 </Typography>
               </TableCell>
@@ -204,4 +182,6 @@ export default function DetailsScreen() {
       </TableContainer>
     </div>
   );
-}
+};
+
+export default DetailsScreen;

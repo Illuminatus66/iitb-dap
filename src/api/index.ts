@@ -17,6 +17,7 @@ API.interceptors.request.use(async (req) => {
 });
 
 interface FetchReportsResponse {
+  _id: string;
   uid: string;
   name: string;
   is_audio_uploaded: boolean;
@@ -42,16 +43,15 @@ interface FetchReportsResponse {
   request_time?: string;
   response_time?: string;
 }
-
 interface AudioUploadRequest {
+  _id?: string;
   uid: string;
   name: string;
-  is_audio_uploaded: boolean;
-  is_report_generated: boolean;
   story: string;
+  audioFile: string;
 }
-
 interface AudioUploadResponse {
+  _id: string;
   uid: string;
   name: string;
   is_audio_uploaded: boolean;
@@ -59,15 +59,27 @@ interface AudioUploadResponse {
   story: string;
   audio_url: string;
 }
-
+interface DetailsUploadRequest {
+  uid: string;
+  name: string;
+  story: string;
+}
+interface DetailsUploadResponse {
+  _id: string;
+  uid: string;
+  name: string;
+  is_audio_uploaded: boolean;
+  is_report_generated: boolean;
+  story: string;
+}
 interface ReportGenerationRequest {
   audio_url: string;
   reference_text_id: string;
   uid: string;
   request_time: string;
 }
-
 interface ReportGenerationResponse {
+  _id: string;
   uid: string;
   name: string;
   is_audio_uploaded: boolean;
@@ -99,6 +111,9 @@ export const fetchAllReports = () =>
 
 export const uploadAudio = (audioUploadData: AudioUploadRequest) =>
   API.post<AudioUploadResponse>("/upload-audio", audioUploadData);
+
+export const uploadDetailsWithoutAudio = (detailsUploadData: DetailsUploadRequest) =>
+  API.post<DetailsUploadResponse>("/upload-details", detailsUploadData);
 
 export const triggerReportGeneration = (reportGenerationData: ReportGenerationRequest) =>
   API.post<ReportGenerationResponse>("/generate-report", reportGenerationData);
