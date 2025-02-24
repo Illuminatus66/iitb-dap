@@ -4,18 +4,6 @@ const API = axios.create({
   baseURL: "https://baseURL.com/",
 });
 
-API.interceptors.request.use(async (req) => {
-  const profile = localStorage.getItem("Profile");
-  if (profile) {
-    const parsedProfile = JSON.parse(profile);
-    if (parsedProfile.token) {
-      req.headers.authorization = `Bearer ${parsedProfile.token}`;
-    }
-  }
-
-  return req;
-});
-
 interface FetchReportsResponse {
   _id: string;
   uid: string;
