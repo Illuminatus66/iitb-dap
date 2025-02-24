@@ -103,7 +103,7 @@ interface DetailsUploadResponse {
 }
 
 interface ReportsState {
-  products: FetchReportsResponse[];
+  reports: FetchReportsResponse[];
   loading: boolean;
   error: string | null;
 }
@@ -135,7 +135,7 @@ export const trigger_report_generation = createAsyncThunk<
       return response.data;
     } catch (error: any) {
       const errorMessage =
-        error.response?.data?.message || "Failed to fetch products";
+        error.response?.data?.message || "Failed to generate a report";
       return rejectWithValue(errorMessage);
     }
   }
@@ -151,7 +151,7 @@ export const upload_audio = createAsyncThunk<
     return response.data;
   } catch (error: any) {
     const errorMessage =
-      error.response?.data?.message || "Failed to fetch products";
+      error.response?.data?.message || "Failed to upload student details and audio file";
     return rejectWithValue(errorMessage);
   }
 });
@@ -168,7 +168,7 @@ export const upload_details_without_audio = createAsyncThunk<
       return response.data;
     } catch (error: any) {
       const errorMessage =
-        error.response?.data?.message || "Failed to fetch products";
+        error.response?.data?.message || "Failed to upload student details";
       return rejectWithValue(errorMessage);
     }
   }

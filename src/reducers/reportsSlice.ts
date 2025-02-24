@@ -82,7 +82,7 @@ const reportsSlice = createSlice({
       )
       .addCase(trigger_report_generation.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || "Failed to create a report";
+        state.error = action.error.message || "Failed to generatee a report";
       })
       .addCase(upload_audio.pending, (state) => {
         state.loading = true;
@@ -98,7 +98,7 @@ const reportsSlice = createSlice({
       )
       .addCase(upload_audio.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || "Failed to upload audio";
+        state.error = action.error.message || "Failed to upload student details and audio";
       })
       .addCase(upload_details_without_audio.pending, (state) => {
         state.loading = true;
@@ -114,7 +114,7 @@ const reportsSlice = createSlice({
       )
       .addCase(upload_details_without_audio.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || "Failed to upload details";
+        state.error = action.error.message || "Failed to upload student details";
       });
   },
 });
