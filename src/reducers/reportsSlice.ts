@@ -6,7 +6,7 @@ import {
   upload_details_without_audio
 } from "../actions/reportActions";
 
-interface ReportDetails {
+export interface ReportDetails {
   _id: string;
   uid: string;
   name: string;

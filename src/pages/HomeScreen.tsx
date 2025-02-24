@@ -18,8 +18,9 @@ import {
 import ClearIcon from "@mui/icons-material/Clear";
 import Header from "../components/Header";
 import AudioUploadModal from "../components/AudioUploadModal";
-import { useAppDispatch, useAppSelector } from "../hooks";
-import { selectReports } from "../reducers/reportsSlice";
+import { useAppSelector } from "../hooks";
+import { ReportDetails, selectReports } from "../reducers/reportsSlice";
+import { trigger_report_generation } from "../actions/reportActions";
 
 interface ReportDetailsComplete {
   _id: string;
@@ -50,7 +51,7 @@ interface ReportDetailsComplete {
 }
 
 interface PreviouslyEnteredStudentData {
-  _id?: string;
+  _id: string;
   standard: string;
   division: string;
   roll_no: string;
@@ -58,15 +59,47 @@ interface PreviouslyEnteredStudentData {
   storyName: string;
 }
 
+// Usually I do not import typed interfaces and keep the entire code in
+// one file for better readability but the correct way to do it is to
+// import interfaces from a single file like I have done for ReportDetails here.
+// The purpose of this function is for additional typesafety even though the backend
+// already ensures the Report Details will be Complete if is_report_generated
+function isReportDetailsComplete(
+  student: ReportDetails
+): student is ReportDetailsComplete {
+  return (
+    student.is_report_generated &&
+    student.file_id !== undefined &&
+    student.audio_type !== undefined &&
+    student.decoded_text !== undefined &&
+    student.no_words !== undefined &&
+    student.no_del !== undefined &&
+    student.del_details !== undefined &&
+    student.no_ins !== undefined &&
+    student.ins_details !== undefined &&
+    student.no_subs !== undefined &&
+    student.subs_details !== undefined &&
+    student.no_miscue !== undefined &&
+    student.no_corr !== undefined &&
+    student.wcpm !== undefined &&
+    student.speech_rate !== undefined &&
+    student.pron_score !== undefined &&
+    student.percent_attempt !== undefined &&
+    student.audio_url !== undefined &&
+    student.request_time !== undefined &&
+    student.response_time !== undefined
+  );
+}
+
 const HomeScreen = () => {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const students = useAppSelector(selectReports);
   const [open, setOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [previouslyEnteredStudentData, setPreviouslyEnteredStudentData] =
     useState<PreviouslyEnteredStudentData | null>(null);
 
+  //Applies the search query
   const filteredStudents = students.filter((student) =>
     student.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -76,7 +109,7 @@ const HomeScreen = () => {
   };
 
   const handleOpenModalFromTable = async (student: {
-    _id?: string;
+    _id: string;
     studentName: string;
     storyName: string;
     uid: string;
@@ -163,49 +196,59 @@ const HomeScreen = () => {
                         <TableCell>{student.name}</TableCell>
                         <TableCell>{student.story}</TableCell>
                         <TableCell>
-                          {student.is_report_generated ? (
-                            student.is_audio_uploaded &&
-                            student.response_time ? (
+                          {student.is_audio_uploaded ? (
+                            student.is_report_generated ? (
+                              <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() =>
+                                  handleOpenModalFromTable({
+                                    _id: student._id,
+                                    uid: student.uid,
+                                    studentName: student.name,
+                                    storyName: student.story,
+                                  })
+                                }
+                              >
+                                Upload New Audio
+                              </Button>
+                            ) : (
                               <>
-                                <span> No audio uploaded</span>
+                                <span> Audio Uploaded </span>
                                 <Button
                                   variant="contained"
                                   color="primary"
                                   onClick={() =>
                                     handleOpenModalFromTable({
+                                      _id: student._id,
                                       uid: student.uid,
                                       studentName: student.name,
                                       storyName: student.story,
                                     })
                                   }
                                 >
-                                  Upload Here
+                                  Upload Again
                                 </Button>
                               </>
-                            ) : (
+                            )
+                          ) : (
+                            <>
+                              <span> No audio uploaded</span>
                               <Button
                                 variant="contained"
                                 color="primary"
-                                onClick={() => generateReport(student)}
+                                onClick={() =>
+                                  handleOpenModalFromTable({
+                                    _id: student._id,
+                                    uid: student.uid,
+                                    studentName: student.name,
+                                    storyName: student.story,
+                                  })
+                                }
                               >
-                                Generate Report
+                                Upload Here
                               </Button>
-                            )
-                          ) : (
-                            <Button
-                              variant="contained"
-                              color="primary"
-                              onClick={() =>
-                                handleOpenModalFromTable({
-                                  _id: student._id,
-                                  uid: student.uid,
-                                  studentName: student.name,
-                                  storyName: student.story,
-                                })
-                              }
-                            >
-                              Upload New Audio
-                            </Button>
+                            </>
                           )}
                         </TableCell>
                         <TableCell>
@@ -216,7 +259,16 @@ const HomeScreen = () => {
                                 <Button
                                   variant="contained"
                                   color="primary"
-                                  onClick={() => goToDetails(student)}
+                                  onClick={() => {
+                                    if (isReportDetailsComplete(student)) {
+                                      goToDetails(student);
+                                    } else {
+                                      console.error(
+                                        "Student object is not complete",
+                                        student
+                                      );
+                                    }
+                                  }}
                                 >
                                   View Latest Report
                                 </Button>
@@ -233,7 +285,22 @@ const HomeScreen = () => {
                               <Button
                                 variant="contained"
                                 color="primary"
-                                onClick={() => generateReport(student)}
+                                onClick={() => {
+                                  if (isReportDetailsComplete(student)) {
+                                    trigger_report_generation({
+                                      _id: student._id,
+                                      reference_text_id: "EN-OL-RC-247-1",
+                                      audio_url: student.audio_url,
+                                      uid: student.uid,
+                                      request_time: student.request_time,
+                                    });
+                                  } else {
+                                    console.error(
+                                      "Student object is not complete",
+                                      student
+                                    );
+                                  }
+                                }}
                               >
                                 Generate Report
                               </Button>
@@ -257,10 +324,14 @@ const HomeScreen = () => {
           </CardContent>
         </Card>
 
-        {/* Create New Modal */}
+        {/* 'Create New' or 'Update Existing' Modal */}
         <AudioUploadModal
           open={open}
+          // This reverse prop allows the child Modal to control when it closes
           onClose={() => setOpen(false)}
+          // This reverse prop clears the state when modal closes, so that on a fresh
+          // open from the '+Create New' button, no defaultData is passed to the Modal
+          onClear={() => setPreviouslyEnteredStudentData(null)}
           defaultData={previouslyEnteredStudentData ?? undefined}
         />
       </div>

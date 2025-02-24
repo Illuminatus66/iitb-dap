@@ -35,6 +35,7 @@ interface FetchReportsResponse {
 }
 
 interface ReportGenerationRequest {
+  _id: string;
   audio_url: string;
   reference_text_id: string;
   uid: string;

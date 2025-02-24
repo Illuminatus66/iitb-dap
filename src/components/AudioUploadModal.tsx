@@ -28,20 +28,24 @@ interface DetailsUploadRequest {
 
 interface AudioUploadModalProps {
   open: boolean;
-  onClose: () => void;
-  defaultData?: {
-    _id?: string;
-    studentName: string;
-    standard: string;
-    division: string;
-    roll_no: string;
-    storyName: string;
-  };
+  onClose: () => void; // Whenever this is called it closes this modal in HomeScreen
+  onClear: () => void; // Whenever this is called it clears the previouslyEnteredStudentData in HomeScreen
+  defaultData?:
+    | {
+        _id: string;
+        studentName: string;
+        standard: string;
+        division: string;
+        roll_no: string;
+        storyName: string;
+      }
+    | undefined;
 }
 
 const AudioUploadModal: React.FC<AudioUploadModalProps> = ({
   open,
   onClose,
+  onClear,
   defaultData,
 }) => {
   const dispatch = useAppDispatch();
@@ -126,12 +130,15 @@ const AudioUploadModal: React.FC<AudioUploadModalProps> = ({
       };
       dispatch(upload_details_without_audio(detailsUploadData));
     }
+    onClear();
     onClose();
   };
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>{mongoID? 'Update Student Record' : 'Create New Student Record'}</DialogTitle>
+      <DialogTitle>
+        {mongoID ? "Update Student Record" : "Create New Student Record"}
+      </DialogTitle>
       <DialogContent
         style={{
           display: "flex",

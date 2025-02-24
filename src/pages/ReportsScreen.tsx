@@ -15,10 +15,6 @@ import {
   TextField,
   InputAdornment,
   IconButton,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -247,9 +243,13 @@ const ReportsScreen = () => {
                             View Report
                           </Button>
                           Generated on{" "}
-                          {new Date(report.response_time).toLocaleDateString("en-GB")}
-                          {" "}at{" "}
-                          {new Date(report.response_time).toLocaleTimeString("en-GB")}
+                          {new Date(report.response_time).toLocaleDateString(
+                            "en-GB"
+                          )}{" "}
+                          at{" "}
+                          {new Date(report.response_time).toLocaleTimeString(
+                            "en-GB"
+                          )}
                         </TableCell>
                       </TableRow>
                     ))
@@ -268,13 +268,12 @@ const ReportsScreen = () => {
       </div>
       {/* Audio Playback Modal */}
       <Dialog open={!!selectedAudio} onClose={() => setSelectedAudio(null)}>
-        <DialogTitle>Audio Playback</DialogTitle>
+        <DialogTitle>
+          {selectedAudio
+            ? `${selectedAudio.uid}_${selectedAudio.studentName} reading ${selectedAudio.storyName}`
+            : "No audio selected"}
+        </DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            {selectedAudio
-              ? `${selectedAudio.uid}_${selectedAudio.studentName} reading ${selectedAudio.storyName}`
-              : "No audio selected"}
-          </DialogContentText>
           {selectedAudio && (
             <audio controls autoPlay style={{ width: "100%" }}>
               <source src={selectedAudio.audio_url} type="audio/mpeg" />
