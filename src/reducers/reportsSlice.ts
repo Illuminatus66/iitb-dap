@@ -11,6 +11,7 @@ import {
   FetchReportsResponse,
   ReportGenerationResponse,
 } from "../api";
+import type { RootState } from './store'
 
 interface ReportsState {
   reports: FetchReportsResponse[];
@@ -99,11 +100,11 @@ const reportsSlice = createSlice({
   },
 });
 
-export const selectReports = (state: { reports: ReportsState }) =>
-  state.reports.reports;
-export const selectReportsLoading = (state: { reports: ReportsState }) =>
-  state.reports.loading;
-export const selectReportsError = (state: { reports: ReportsState }) =>
-  state.reports.error;
+export const selectReports = (state: RootState) =>
+  state.reports;
+export const selectReportsLoading = (state: RootState) =>
+  state.loading;
+export const selectReportsError = (state: RootState) =>
+  state.error;
 
 export default reportsSlice.reducer;
