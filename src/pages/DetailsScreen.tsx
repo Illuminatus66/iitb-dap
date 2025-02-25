@@ -14,39 +14,12 @@ import {
 } from "@mui/material";
 import FormattedTextDisplay from "../components/FormattedTextDisplay";
 import Header from "../components/Header";
-
-interface ReportDetailsComplete {
-  _id: string;
-  uid: string;
-  name: string;
-  is_audio_uploaded: boolean;
-  is_report_generated: boolean;
-  file_id: string;
-  audio_type: string;
-  decoded_text: string;
-  no_words: number;
-  no_del: number;
-  del_details: string;
-  no_ins: number;
-  ins_details: string;
-  no_subs: number;
-  subs_details: string;
-  no_miscue: number;
-  no_corr: number;
-  wcpm: number;
-  speech_rate: number;
-  pron_score: number;
-  percent_attempt: number;
-  audio_url: string;
-  story: string;
-  request_time: string;
-  response_time: string;
-}
+import { ReportGenerationResponse } from "../api";
 
 const DetailsScreen = () => {
   const location = useLocation();
   const { reportDetails } = location.state as {
-    reportDetails: ReportDetailsComplete;
+    reportDetails: ReportGenerationResponse;
   };
 
   return (
@@ -96,6 +69,15 @@ const DetailsScreen = () => {
           subs_details={reportDetails.subs_details}
         />
       </Box>
+
+      {/* Audio Player */}
+      {reportDetails.audio_url && (
+        <Box sx={{ width: "80%", margin: "20px auto", textAlign: "center" }}>
+          <audio controls src={reportDetails.audio_url} style={{ width: "50%" }}>
+            Your browser does not support the audio element.
+          </audio>
+        </Box>
+      )}
 
       {/* Two-Column Metrics Table */}
       <TableContainer

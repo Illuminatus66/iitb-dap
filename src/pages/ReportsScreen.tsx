@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/en-gb";
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 import {
   Button,
   Card,
@@ -18,7 +20,6 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogContentText,
 } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
@@ -29,6 +30,9 @@ import Header from "../components/Header";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "../hooks";
 import { selectReports } from "../reducers/reportsSlice";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 interface ReportDetailsComplete {
   _id: string;
@@ -225,7 +229,14 @@ const ReportsScreen = () => {
                             <PlayArrowIcon />
                           </IconButton>
                         </TableCell>
-                        <TableCell>{report.request_time}</TableCell>
+                        <TableCell>
+                          {new Date(report.request_time).toLocaleDateString(
+                            "en-GB"
+                          )}{" "}
+                          {new Date(report.request_time).toLocaleTimeString(
+                            "en-GB"
+                          )}
+                        </TableCell>
                         <TableCell>
                           {(
                             (new Date(report.response_time).getTime() -
@@ -266,6 +277,7 @@ const ReportsScreen = () => {
           </CardContent>
         </Card>
       </div>
+      
       {/* Audio Playback Modal */}
       <Dialog open={!!selectedAudio} onClose={() => setSelectedAudio(null)}>
         <DialogTitle>

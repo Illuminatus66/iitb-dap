@@ -4,7 +4,7 @@ const API = axios.create({
   baseURL: "https://baseURL.com/",
 });
 
-interface FetchReportsResponse {
+export interface FetchReportsResponse {
   _id: string;
   uid: string;
   name: string;
@@ -31,14 +31,14 @@ interface FetchReportsResponse {
   request_time?: string;
   response_time?: string;
 }
-interface AudioUploadRequest {
+export interface AudioUploadRequest {
   _id?: string;
   uid: string;
   name: string;
   story: string;
   audioFile: string;
 }
-interface AudioUploadResponse {
+export interface AudioUploadResponse {
   _id: string;
   uid: string;
   name: string;
@@ -47,12 +47,12 @@ interface AudioUploadResponse {
   story: string;
   audio_url: string;
 }
-interface DetailsUploadRequest {
+export interface DetailsUploadRequest {
   uid: string;
   name: string;
   story: string;
 }
-interface DetailsUploadResponse {
+export interface DetailsUploadResponse {
   _id: string;
   uid: string;
   name: string;
@@ -60,13 +60,13 @@ interface DetailsUploadResponse {
   is_report_generated: boolean;
   story: string;
 }
-interface ReportGenerationRequest {
+export interface ReportGenerationRequest {
+  _id: string;
   audio_url: string;
   reference_text_id: string;
-  uid: string;
   request_time: string;
 }
-interface ReportGenerationResponse {
+export interface ReportGenerationResponse {
   _id: string;
   uid: string;
   name: string;
@@ -95,16 +95,16 @@ interface ReportGenerationResponse {
 }
 
 export const fetchAllReports = () =>
-  API.get<FetchReportsResponse[]>(`/fetch-all-reports`);
+  API.get<FetchReportsResponse[]>(`reports/fetch-all-reports`);
 
 export const uploadAudio = (audioUploadData: AudioUploadRequest) =>
-  API.post<AudioUploadResponse>("/upload-audio", audioUploadData);
+  API.post<AudioUploadResponse>("reports/upload-audio", audioUploadData);
 
 export const uploadDetailsWithoutAudio = (detailsUploadData: DetailsUploadRequest) =>
-  API.post<DetailsUploadResponse>("/upload-details", detailsUploadData);
+  API.post<DetailsUploadResponse>("reports/upload-details", detailsUploadData);
 
 export const triggerReportGeneration = (reportGenerationData: ReportGenerationRequest) =>
-  API.post<ReportGenerationResponse>("/generate-report", reportGenerationData);
+  API.post<ReportGenerationResponse>("reports/generate-report", reportGenerationData);
 
 
 

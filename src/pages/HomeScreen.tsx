@@ -15,40 +15,19 @@ import {
   InputAdornment,
   IconButton,
 } from "@mui/material";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 import ClearIcon from "@mui/icons-material/Clear";
 import Header from "../components/Header";
 import AudioUploadModal from "../components/AudioUploadModal";
 import { useAppSelector } from "../hooks";
-import { ReportDetails, selectReports } from "../reducers/reportsSlice";
+import { selectReports } from "../reducers/reportsSlice";
 import { trigger_report_generation } from "../actions/reportActions";
+import { FetchReportsResponse, ReportGenerationResponse } from "../api";
 
-interface ReportDetailsComplete {
-  _id: string;
-  uid: string;
-  name: string;
-  is_audio_uploaded: boolean;
-  is_report_generated: boolean;
-  file_id: string;
-  audio_type: string;
-  decoded_text: string;
-  no_words: number;
-  no_del: number;
-  del_details: string;
-  no_ins: number;
-  ins_details: string;
-  no_subs: number;
-  subs_details: string;
-  no_miscue: number;
-  no_corr: number;
-  wcpm: number;
-  speech_rate: number;
-  pron_score: number;
-  percent_attempt: number;
-  audio_url: string;
-  story: string;
-  request_time: string;
-  response_time: string;
-}
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 interface PreviouslyEnteredStudentData {
   _id: string;
@@ -59,14 +38,11 @@ interface PreviouslyEnteredStudentData {
   storyName: string;
 }
 
-// Usually I do not import typed interfaces and keep the entire code in
-// one file for better readability but the correct way to do it is to
-// import interfaces from a single file like I have done for ReportDetails here.
 // The purpose of this function is for additional typesafety even though the backend
 // already ensures the Report Details will be Complete if is_report_generated
 function isReportDetailsComplete(
-  student: ReportDetails
-): student is ReportDetailsComplete {
+  student: FetchReportsResponse
+): student is ReportGenerationResponse {
   return (
     student.is_report_generated &&
     student.file_id !== undefined &&
@@ -95,6 +71,9 @@ const HomeScreen = () => {
   const navigate = useNavigate();
   const students = useAppSelector(selectReports);
   const [open, setOpen] = useState<boolean>(false);
+  const [loadingStates, setLoadingStates] = useState<{
+    [_id: string]: boolean;
+  }>({});
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [previouslyEnteredStudentData, setPreviouslyEnteredStudentData] =
     useState<PreviouslyEnteredStudentData | null>(null);
@@ -104,7 +83,7 @@ const HomeScreen = () => {
     student.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const goToDetails = (report: ReportDetailsComplete) => {
+  const goToDetails = (report: ReportGenerationResponse) => {
     navigate("/details", { state: { reportDetails: report } });
   };
 
@@ -125,6 +104,28 @@ const HomeScreen = () => {
       storyName: storyName,
     });
     setOpen(true);
+  };
+
+  const handleGenerateReport = async (student: FetchReportsResponse) => {
+    if (!student.audio_url) return;
+
+    // Sets loading for student with a particular _id
+    setLoadingStates((prev) => ({ ...prev, [student._id]: true }));
+
+    try {
+      trigger_report_generation({
+        _id: student._id,
+        reference_text_id: "EN-OL-RC-247-1",
+        audio_url: student.audio_url,
+        request_time: dayjs()
+          .tz("Asia/Kolkata")
+          .format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
+      });
+    } catch (error) {
+      console.error("Error generating report:", error);
+    } finally {
+      setLoadingStates((prev) => ({ ...prev, [student._id]: false }));
+    }
   };
 
   return (
@@ -285,24 +286,12 @@ const HomeScreen = () => {
                               <Button
                                 variant="contained"
                                 color="primary"
-                                onClick={() => {
-                                  if (isReportDetailsComplete(student)) {
-                                    trigger_report_generation({
-                                      _id: student._id,
-                                      reference_text_id: "EN-OL-RC-247-1",
-                                      audio_url: student.audio_url,
-                                      uid: student.uid,
-                                      request_time: student.request_time,
-                                    });
-                                  } else {
-                                    console.error(
-                                      "Student object is not complete",
-                                      student
-                                    );
-                                  }
-                                }}
+                                disabled={loadingStates[student._id]}
+                                onClick={() => handleGenerateReport(student)}
                               >
-                                Generate Report
+                                {loadingStates[student._id]
+                                  ? "Processing"
+                                  : "Generate Report"}
                               </Button>
                             )
                           ) : (

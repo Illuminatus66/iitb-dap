@@ -3,39 +3,17 @@ import {
   fetch_all_reports,
   trigger_report_generation,
   upload_audio,
-  upload_details_without_audio
+  upload_details_without_audio,
 } from "../actions/reportActions";
-
-export interface ReportDetails {
-  _id: string;
-  uid: string;
-  name: string;
-  is_audio_uploaded: boolean;
-  is_report_generated: boolean;
-  file_id?: string;
-  audio_type?: string;
-  decoded_text?: string;
-  no_words?: number;
-  no_del?: number;
-  del_details?: string;
-  no_ins?: number;
-  ins_details?: string;
-  no_subs?: number;
-  subs_details?: string;
-  no_miscue?: number;
-  no_corr?: number;
-  wcpm?: number;
-  speech_rate?: number;
-  pron_score?: number;
-  percent_attempt?: number;
-  audio_url?: string;
-  story: string;
-  request_time?: string;
-  response_time?: string;
-}
+import {
+  AudioUploadResponse,
+  DetailsUploadResponse,
+  FetchReportsResponse,
+  ReportGenerationResponse,
+} from "../api";
 
 interface ReportsState {
-  reports: ReportDetails[];
+  reports: FetchReportsResponse[];
   loading: boolean;
   error: string | null;
 }
@@ -58,7 +36,7 @@ const reportsSlice = createSlice({
       })
       .addCase(
         fetch_all_reports.fulfilled,
-        (state, action: PayloadAction<ReportDetails[]>) => {
+        (state, action: PayloadAction<FetchReportsResponse[]>) => {
           state.reports = action.payload;
           state.loading = false;
           state.error = null;
@@ -74,7 +52,7 @@ const reportsSlice = createSlice({
       })
       .addCase(
         trigger_report_generation.fulfilled,
-        (state, action: PayloadAction<ReportDetails>) => {
+        (state, action: PayloadAction<ReportGenerationResponse>) => {
           state.reports.push(action.payload);
           state.loading = false;
           state.error = null;
@@ -90,7 +68,7 @@ const reportsSlice = createSlice({
       })
       .addCase(
         upload_audio.fulfilled,
-        (state, action: PayloadAction<ReportDetails>) => {
+        (state, action: PayloadAction<AudioUploadResponse>) => {
           state.reports.push(action.payload);
           state.loading = false;
           state.error = null;
@@ -98,7 +76,8 @@ const reportsSlice = createSlice({
       )
       .addCase(upload_audio.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || "Failed to upload student details and audio";
+        state.error =
+          action.error.message || "Failed to upload student details and audio";
       })
       .addCase(upload_details_without_audio.pending, (state) => {
         state.loading = true;
@@ -106,7 +85,7 @@ const reportsSlice = createSlice({
       })
       .addCase(
         upload_details_without_audio.fulfilled,
-        (state, action: PayloadAction<ReportDetails>) => {
+        (state, action: PayloadAction<DetailsUploadResponse>) => {
           state.reports.push(action.payload);
           state.loading = false;
           state.error = null;
@@ -114,7 +93,8 @@ const reportsSlice = createSlice({
       )
       .addCase(upload_details_without_audio.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || "Failed to upload student details";
+        state.error =
+          action.error.message || "Failed to upload student details";
       });
   },
 });
