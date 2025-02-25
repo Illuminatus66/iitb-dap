@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://baseURL.com/",
+  baseURL: "https://iitb-dap-backend-4e1d8119e037.herokuapp.com/",
 });
 
 export interface FetchReportsResponse {
