@@ -38,7 +38,7 @@ A React-based frontend application designed to interact with the Node.js backend
 
 - [Node.js](https://nodejs.org/) (v14 or later)
 - [npm](https://www.npmjs.com/) or [Yarn](https://yarnpkg.com/)
-- A running instance of the backend API (see [https://github.com/Illuminatus66/iitb-dap-backend#](README.md)).
+- A running instance of the backend API (see [README.md](https://github.com/Illuminatus66/iitb-dap-backend#)).
 
 ### Installation
 
