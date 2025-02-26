@@ -23,7 +23,7 @@ const DetailsScreen = () => {
   };
 
   return (
-    <div style={{alignItems:'center'}}>
+    <div style={{ alignItems: "center" }}>
       <Header />
 
       {/* Details Section*/}
@@ -49,7 +49,7 @@ const DetailsScreen = () => {
         </CardContent>
       </Card>
 
-      <Card style={{ margin: "20px", padding: "20px" }}>
+      <Card style={{ margin: "20px", padding: "20px", alignItems: "center" }}>
         <FormattedTextDisplay
           del_details={reportDetails.del_details}
           ins_details={reportDetails.ins_details}
@@ -64,7 +64,7 @@ const DetailsScreen = () => {
           <audio
             controls
             src={reportDetails.audio_url}
-            style={{ width: "50%" }}
+            style={{ width: "60%" }}
           >
             Your browser does not support the audio element.
           </audio>
