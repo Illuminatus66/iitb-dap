@@ -49,20 +49,14 @@ const DetailsScreen = () => {
         </CardContent>
       </Card>
 
-      <Box
-        style={{
-          width: "80%",
-          height: "25vh",
-          overflowY: "hidden",
-        }}
-      >
+      <Card style={{ margin: "20px", padding: "20px", width: "80%" }}>
         <FormattedTextDisplay
           del_details={reportDetails.del_details}
           ins_details={reportDetails.ins_details}
           subs_details={reportDetails.subs_details}
           correct_text={reportDetails.correct_text}
         />
-      </Box>
+      </Card>
 
       {/* Audio Player */}
       {reportDetails.audio_url && (

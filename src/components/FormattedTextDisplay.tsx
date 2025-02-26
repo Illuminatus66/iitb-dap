@@ -38,7 +38,8 @@ const FormattedTextDisplay: React.FC<FormattedTextProps> = ({
         ins_details.split(",").map((pair) => {
           const [index, wordData] = pair.split("-");
           let [correctWord, insertedWord] = wordData.split(":");
-          insertedWord = insertedWord === "<EOL>" ? "End of Line" : insertedWord;
+          insertedWord =
+            insertedWord === "<EOL>" ? "End of Line" : insertedWord;
           return [parseInt(index) - 1, { correctWord, insertedWord }];
         })
       )
@@ -50,7 +51,8 @@ const FormattedTextDisplay: React.FC<FormattedTextProps> = ({
         subs_details.split(",").map((pair) => {
           const [index, wordData] = pair.split("-");
           let [correctWord, substitutedWord] = wordData.split(":");
-          substitutedWord = substitutedWord === "<UNK>" ? "Unknown Word" : substitutedWord;
+          substitutedWord =
+            substitutedWord === "<UNK>" ? "Unknown Word" : substitutedWord;
           return [parseInt(index) - 1, { correctWord, substitutedWord }];
         })
       )
