@@ -61,14 +61,11 @@ const FormattedTextDisplay: React.FC<FormattedTextProps> = ({
   return (
     <Box
       style={{
-        width: "100%",
         height: "100%",
         overflowY: "auto",
         border: "1px solid #ccc",
-        padding: "10px 20px",
         fontSize: "1.1rem",
         fontFamily: "Arial, sans-serif",
-        whiteSpace: "wrap",
       }}
     >
       {correctWords.map(({ index, word }) => {
@@ -96,8 +93,7 @@ const FormattedTextDisplay: React.FC<FormattedTextProps> = ({
                   {insertedWords[index].insertedWord}
                 </span>
                 <span style={{ color: "#FFC300", marginRight: "5px" }}>
-                  {substitutedWords[index].substitutedWord} (<span>{word}</span>
-                  )
+                  {substitutedWords[index].substitutedWord}({word})
                 </span>
               </>
             ) : isInserted ? (
@@ -122,7 +118,7 @@ const FormattedTextDisplay: React.FC<FormattedTextProps> = ({
               </span>
             ) : isSubstituted ? (
               <span style={{ color: "#FFC300", marginRight: "5px" }}>
-                {substitutedWords[index].substitutedWord} (<span>{word}</span>)
+                {substitutedWords[index].substitutedWord}({word})
               </span>
             ) : isDeleted ? (
               <span

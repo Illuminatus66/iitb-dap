@@ -90,7 +90,7 @@ const DetailsScreen = () => {
                 </Typography>
               </TableCell>
               <TableCell>
-                <Typography sx={{ fontWeight: "bold", fontSize: 12 }}>
+                <Typography sx={{ fontWeight: "bold", fontSize: 15 }}>
                   {" "}
                   Number of Correct Words
                 </Typography>
@@ -104,7 +104,7 @@ const DetailsScreen = () => {
 
             <TableRow>
               <TableCell>
-                <Typography sx={{ fontWeight: "bold", fontSize: 12 }}>
+                <Typography sx={{ fontWeight: "bold", fontSize: 15 }}>
                   Number of Miscues
                 </Typography>
               </TableCell>
@@ -114,7 +114,7 @@ const DetailsScreen = () => {
                 </Typography>
               </TableCell>
               <TableCell>
-                <Typography sx={{ fontWeight: "bold", fontSize: 12 }}>
+                <Typography sx={{ fontWeight: "bold", fontSize: 15 }}>
                   Number of Substituted Words
                 </Typography>
               </TableCell>
@@ -137,7 +137,7 @@ const DetailsScreen = () => {
                 </Typography>
               </TableCell>
               <TableCell>
-                <Typography sx={{ fontWeight: "bold", fontSize: 12 }}>
+                <Typography sx={{ fontWeight: "bold", fontSize: 15 }}>
                   Words Correct Per Minute
                 </Typography>
               </TableCell>
@@ -160,7 +160,7 @@ const DetailsScreen = () => {
                 </Typography>
               </TableCell>
               <TableCell>
-                <Typography sx={{ fontWeight: "bold", fontSize: 12 }}>
+                <Typography sx={{ fontWeight: "bold", fontSize: 15 }}>
                   Pronunciation Score
                 </Typography>
               </TableCell>
