@@ -97,16 +97,19 @@ const AudioUploadModal: React.FC<AudioUploadModalProps> = ({
       const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
       // Duration should be less than a minute
       if (audioBuffer.duration >= 60) {
-        alert("Audio must be less than 1 minute.");
+        alert(`Audio must be less than 1 minute, The duration of this audio is ${audioBuffer.duration}`);
         audioContext.close();
+        setLoading(false);
         return false;
       }
       // Sample rate should be exactly 16kHz according to the documentation
-      if (audioBuffer.sampleRate !== 16000) {
-        alert("Audio must have a 16kHz sampling rate.");
-        audioContext.close();
-        return false;
-      }
+      // Apparently the AudioContext defaults to its own preset sampling rate
+      // if (audioBuffer.sampleRate !== 16000) {
+      //   alert(`Audio must have a 16kHz sampling rate,${audioBuffer.sampleRate}, ${audioBuffer.numberOfChannels}`);
+      //   audioContext.close();
+      //   setLoading(false);
+      //   return false;
+      // }
       audioContext.close();
       return true;
     } catch (error) {
