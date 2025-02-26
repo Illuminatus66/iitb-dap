@@ -17,12 +17,14 @@ interface ReportsState {
   reports: FetchReportsResponse[];
   loading: boolean;
   error: string | null;
+  reportsFetched: boolean;
 }
 
 const initialState: ReportsState = {
   reports: [],
   loading: false,
   error: null,
+  reportsFetched: false,
 };
 
 const reportsSlice = createSlice({
@@ -40,6 +42,7 @@ const reportsSlice = createSlice({
         (state, action: PayloadAction<FetchReportsResponse[]>) => {
           state.reports = action.payload;
           state.loading = false;
+          state.reportsFetched = true;
           state.error = null;
         }
       )
@@ -109,5 +112,8 @@ export const selectReportsLoading = (state: RootState) =>
   state.reports.loading;
 export const selectReportsError = (state: RootState) =>
   state.reports.error;
+export const selectIfReportsFetched = (state: RootState) =>
+  state.reports.reportsFetched;
+
 
 export default reportsSlice.reducer;

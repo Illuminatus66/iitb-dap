@@ -59,14 +59,14 @@ const FormattedTextDisplay: React.FC<FormattedTextProps> = ({
   return (
     <Box
       style={{
-        width: "80%",
-        height: "25vh",
+        width: "100%",
+        height: "100%",
         overflowY: "auto",
         border: "1px solid #ccc",
         padding: "10px",
         fontSize: "1.1rem",
         fontFamily: "Arial, sans-serif",
-        whiteSpace: "pre-wrap",
+        whiteSpace: "wrap",
       }}
     >
       {actualWords.map(({ index, word }) => (

@@ -23,7 +23,11 @@ import ClearIcon from "@mui/icons-material/Clear";
 import Header from "../components/Header";
 import AudioUploadModal from "../components/AudioUploadModal";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { selectReports, selectReportsLoading } from "../reducers/reportsSlice";
+import {
+  selectIfReportsFetched,
+  selectReports,
+  selectReportsLoading,
+} from "../reducers/reportsSlice";
 import {
   fetch_all_reports,
   trigger_report_generation,
@@ -80,14 +84,13 @@ const HomeScreen = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [previouslyEnteredStudentData, setPreviouslyEnteredStudentData] =
     useState<PreviouslyEnteredStudentData | null>(null);
-  const reportsFetched = useRef(false);
+  const reportsFetched = useAppSelector(selectIfReportsFetched);
 
   useEffect(() => {
-    if (!reportsFetched.current) {
+    if (!reportsFetched) {
       dispatch(fetch_all_reports());
-      reportsFetched.current = true;
     }
-  }, [dispatch]);
+  }, [dispatch, reportsFetched]);
 
   const handleRefreshReports = () => {
     dispatch(fetch_all_reports());
@@ -177,7 +180,7 @@ const HomeScreen = () => {
             <Button
               variant="contained"
               onClick={() => setOpen(true)}
-              style={{ backgroundColor: "black" }}
+              color="primary"
             >
               +Create New
             </Button>
@@ -186,7 +189,7 @@ const HomeScreen = () => {
               variant="contained"
               onClick={handleRefreshReports}
               disabled={loading}
-              style={{ backgroundColor: "black" }}
+              color="primary"
             >
               {loading ? "Refreshing..." : "Refresh Entries"}
             </Button>
@@ -229,7 +232,7 @@ const HomeScreen = () => {
                             student.is_report_generated ? (
                               <Button
                                 variant="contained"
-                                color="primary"
+                                style={{ backgroundColor: "black" }}
                                 onClick={() =>
                                   handleOpenModalFromTable({
                                     _id: student._id,
@@ -244,9 +247,31 @@ const HomeScreen = () => {
                             ) : (
                               <>
                                 <span> Audio Uploaded </span>
+                                <div style={{ marginTop: 8 }}>
+                                  <Button
+                                    variant="contained"
+                                    style={{ backgroundColor: "black" }}
+                                    onClick={() =>
+                                      handleOpenModalFromTable({
+                                        _id: student._id,
+                                        uid: student.uid,
+                                        studentName: student.name,
+                                        storyName: student.story,
+                                      })
+                                    }
+                                  >
+                                    Upload Again
+                                  </Button>
+                                </div>
+                              </>
+                            )
+                          ) : (
+                            <>
+                              <span> No audio uploaded</span>
+                              <div style={{ marginTop: 8 }}>
                                 <Button
                                   variant="contained"
-                                  color="primary"
+                                  style={{ backgroundColor: "black" }}
                                   onClick={() =>
                                     handleOpenModalFromTable({
                                       _id: student._id,
@@ -256,27 +281,9 @@ const HomeScreen = () => {
                                     })
                                   }
                                 >
-                                  Upload Again
+                                  Upload Here
                                 </Button>
-                              </>
-                            )
-                          ) : (
-                            <>
-                              <span> No audio uploaded</span>
-                              <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={() =>
-                                  handleOpenModalFromTable({
-                                    _id: student._id,
-                                    uid: student.uid,
-                                    studentName: student.name,
-                                    storyName: student.story,
-                                  })
-                                }
-                              >
-                                Upload Here
-                              </Button>
+                              </div>
                             </>
                           )}
                         </TableCell>
@@ -287,7 +294,7 @@ const HomeScreen = () => {
                               <>
                                 <Button
                                   variant="contained"
-                                  color="primary"
+                                  style={{ backgroundColor: "black" }}
                                   onClick={() => {
                                     if (isReportDetailsComplete(student)) {
                                       goToDetails(student);

@@ -125,7 +125,7 @@ const ReportsScreen = () => {
             placeholder="Search for a student's name"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            style={{ flex: 1, maxWidth: "300px" }}
+            style={{ flex: 1, maxWidth: "400px" }}
             slotProps={{
               input: {
                 endAdornment: searchQuery && (
