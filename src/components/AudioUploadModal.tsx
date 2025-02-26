@@ -67,7 +67,32 @@ const AudioUploadModal: React.FC<AudioUploadModalProps> = ({
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      setFile(e.target.files[0]);
+      const selectedFile = e.target.files[0];
+
+      const allowedTypes = [
+        "audio/mpeg",
+        "audio/wav",
+        "audio/ogg",
+        "audio/flac",
+        "audio/m4a",
+        "audio/opus",
+        "audio/mid",
+        "audio/weba",
+        "audio/oga",
+        "audio/mp3",
+        "audio/aiff",
+        "audio/wma",
+        "audio/au",
+      ];
+
+      if (!allowedTypes.includes(selectedFile.type)) {
+        alert(
+          "Invalid file type! Please upload an audio file (MPEG, MP3, WAV, OGG, FLAC, M4A, OPUS, MID, WEBA, OGA, MP#, AIFF, WMA, AU)."
+        );
+        e.target.value = "";
+        return;
+      }
+      setFile(selectedFile);
     } else {
       setFile(null);
     }
@@ -97,7 +122,7 @@ const AudioUploadModal: React.FC<AudioUploadModalProps> = ({
       const arrayBuffer = await file.arrayBuffer();
       const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
       // Duration should be less than a minute
-      if (audioBuffer.duration >= 60) {
+      if (audioBuffer.duration >= 61) {
         alert(
           `Audio must be less than 1 minute, The duration of this audio is ${audioBuffer.duration}`
         );
