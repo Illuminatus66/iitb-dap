@@ -248,7 +248,7 @@ const ReportsScreen = () => {
                         <TableCell>
                           <Button
                             variant="contained"
-                            color="primary"
+                            style={{ backgroundColor: "black" }}
                             onClick={() => goToDetails(report)}
                           >
                             View Report
