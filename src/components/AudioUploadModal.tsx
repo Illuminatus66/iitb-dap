@@ -83,11 +83,13 @@ const AudioUploadModal: React.FC<AudioUploadModalProps> = ({
         "audio/aiff",
         "audio/wma",
         "audio/au",
+        "audio/x-m4a",
       ];
 
       if (!allowedTypes.includes(selectedFile.type)) {
+        console.log("Selected file type:", selectedFile.type);
         alert(
-          "Invalid file type! Please upload an audio file (MPEG, MP3, WAV, OGG, FLAC, M4A, OPUS, MID, WEBA, OGA, MP#, AIFF, WMA, AU)."
+          "Invalid file type! Please upload an audio file (MPEG, MP3, WAV, OGG, FLAC, M4A, OPUS, MID, WEBA, OGA, AIFF, WMA, AU)."
         );
         e.target.value = "";
         return;
