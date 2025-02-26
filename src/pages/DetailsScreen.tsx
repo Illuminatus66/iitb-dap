@@ -23,7 +23,7 @@ const DetailsScreen = () => {
   };
 
   return (
-    <div>
+    <div style={{alignItems:'center'}}>
       <Header />
 
       {/* Details Section*/}
@@ -49,7 +49,7 @@ const DetailsScreen = () => {
         </CardContent>
       </Card>
 
-      <Card style={{ margin: "20px", padding: "20px", width: "80%" }}>
+      <Card style={{ margin: "20px", padding: "20px", maxWidth: "80%" }}>
         <FormattedTextDisplay
           del_details={reportDetails.del_details}
           ins_details={reportDetails.ins_details}
