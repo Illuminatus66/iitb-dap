@@ -145,7 +145,10 @@ const AudioUploadModal: React.FC<AudioUploadModalProps> = ({
     // _id depending upon where the AudioUploadModal was opened from
     if (file) {
       const isValid = await validateAudioFile(file);
-      if (!isValid) return;
+      if (!isValid) {
+        setLoading(false);
+        return;
+      }
       try {
         const base64Audio = await convertFileToBase64(file);
         const audioUploadData: AudioUploadRequest = {
@@ -154,18 +157,23 @@ const AudioUploadModal: React.FC<AudioUploadModalProps> = ({
           ...(mongoID && { _id: mongoID }),
         };
         dispatch(upload_audio(audioUploadData));
+        setLoading(false);
+        onClear();
+        onClose();
+        return;
       } catch (error) {
         console.error("Error converting file:", error);
+        setLoading(false);
         return;
       }
-    } else {
-      // Audio not uploaded, dispatch upload_details_without_audio.
-      const detailsUploadData: DetailsUploadRequest = {
-        ...commonPayload,
-        ...(mongoID && { _id: mongoID }),
-      };
-      dispatch(upload_details_without_audio(detailsUploadData));
     }
+    // Audio not uploaded, dispatch upload_details_without_audio.
+    const detailsUploadData: DetailsUploadRequest = {
+      ...commonPayload,
+      ...(mongoID && { _id: mongoID }),
+    };
+    dispatch(upload_details_without_audio(detailsUploadData));
+    setLoading(false);
     onClear();
     onClose();
   };
