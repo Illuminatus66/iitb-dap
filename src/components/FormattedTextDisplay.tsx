@@ -68,8 +68,8 @@ const FormattedTextDisplay: React.FC<FormattedTextProps> = ({
         padding: "10px",
         fontSize: "1.1rem",
         fontFamily: "Arial, sans-serif",
-        whiteSpace: "normal",
-        wordBreak: "break-word",
+        whiteSpace: 'normal',
+        wordBreak: 'break-word',
       }}
     >
       {actualWords.map(({ index, word }) => (
@@ -77,19 +77,12 @@ const FormattedTextDisplay: React.FC<FormattedTextProps> = ({
           {insertedWords[index] && (
             <span
               style={{
+                textDecoration: "underline",
                 color: "black",
                 marginRight: "5px",
               }}
             >
-              <span
-                style={{
-                  textDecoration: "underline",
-                  color: "black",
-                }}
-              >
-                {insertedWords[index].insertedWord}
-              </span>{" "}
-              <span>{insertedWords[index].correctWord}</span>
+              {insertedWords[index].insertedWord}
             </span>
           )}
 
@@ -105,8 +98,7 @@ const FormattedTextDisplay: React.FC<FormattedTextProps> = ({
             </span>
           ) : substitutedWords[index] ? (
             <span style={{ color: "#FFC300", marginRight: "5px" }}>
-              {substitutedWords[index].substitutedWord}
-              {""}(<span>{substitutedWords[index].correctWord}</span>)
+              {substitutedWords[index].substitutedWord}{' '}(<span>{word}</span>)
             </span>
           ) : (
             <span style={{ color: "green", marginRight: "5px" }}>{word}</span>
