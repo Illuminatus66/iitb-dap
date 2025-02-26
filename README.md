@@ -1,46 +1,112 @@
-# Getting Started with Create React App
+# React(.ts) Frontend
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A React-based frontend application designed to interact with the Node.js backend API for audio uploads, and report generation via the Speech Assessment Service (SAS).
 
-## Available Scripts
+## Table of Contents
 
-In the project directory, you can run:
+- [Features](#features)
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Configuration](#configuration)
+- [Project Structure](#project-structure)
+- [Usage](#usage)
+- [License](#license)
 
-### `npm start`
+## Features
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- **User-Friendly Interface**: Intuitive UI for creating and managing reports.
+- **Audio Recording/Upload**: Allows stakeholders to upload audio files.
+- **Student Details Input**: Form for entering student's details (UID, Name, Story Name).
+- **Report Listing**: Displays a list of existing reports with relevant information.
+- **Report Generation Trigger**: Enables users to trigger report generation via the backend API.
+- **Real-time Updates**: Displays updated report details after generation.
+- **Error Handling**: Provides clear error messages for user feedback.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Tech Stack
 
-### `npm test`
+- **React**: For building a typesafe user interface.
+- **Axios**: For making HTTP requests to the backend API.
+- **React Router**: For client-side routing.
+- **@reduxjs/toolkit**: To manage global state in a simpler manner than Redux.
+- **Material-UI**: For most of the styled components, tables and forms.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Getting Started
 
-### `npm run build`
+### Prerequisites
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- [Node.js](https://nodejs.org/) (v14 or later)
+- [npm](https://www.npmjs.com/) or [Yarn](https://yarnpkg.com/)
+- A running instance of the backend API (see [https://github.com/Illuminatus66/iitb-dap-backend#](README.md)).
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Installation
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. **Clone the repository:**
 
-### `npm run eject`
+```bash
+   git clone https://github.com/Illuminatus66/iitb-dap.git
+   cd iitb-dap
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+2. **Install Dependencies:**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
+   npm install
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+3. **Configuration:**
+- Change the BaseURL in the `src/api/index.ts` file to the URL for your backend
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+## Project Structure
 
-## Learn More
+```
+frontend/
+|-- public/
+|   |-- index.html
+|   |-- ...
+|-- src/
+|   |-- pages/
+|   |   |-- HomeScreen.tsx
+|   |   |-- DetailsScreen.tsx
+|   |   |-- ReportsScreen.tsx
+|   |-- components/
+|   |   |-- AudioUploadModal.tsx
+|   |   |-- FormattedTextDisplay.tsx
+|   |   |-- Header.tsx
+|   |-- reducers/
+|   |   |-- reportsSlice.ts
+|   |   |-- store.ts
+|   |-- api/
+|   |   |-- index.ts
+|   |-- actions/
+|   |   |-- reportActions.ts
+|   |-- App.tsx
+|   |-- index.tsx
+|   |-- hooks.ts
+|   |-- ...
+|-- package.json
+|-- tsconfig.json
+|-- README.md
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Usage
+1. Start the development server:
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+    ``` bash
+    npm start
+    ```
+
+2. Open your browser and navigate to http://localhost:3000 (or the port specified).
+3. Edit the AudioUploadModal.tsx component to include a form field for Reference_text_ID, and pass it with every new audio upload to store inside MongoDB for report generation later on.
+3. Use the form to input student details and upload audio files.
+4. View the list of reports and trigger report generation as and when needed.
+5. Reports include all metrics along with a formatted text passage to give a visual representation of errors made by students.
+
+## Understanding the Formatted Text
+
+1. If a student omits a word, it is displayed with a strikethrough and the text is coloured black
+2. If a student substitutes a word for another word, the incorrect word is displayed preceding the correct word which itself is displayed in round brackets. Both the words are coloured yellow.
+3. If a student inserts a word before the next expected word, the inserted word is underlined and both the words are coloured black.
+4. A special case is when the student inserts a word before a poorly enunciated word which would cause the SAS model to assign a low confidence score to the poorly enunciated word and a higher confidence score to another similar sounding word. This counts as a substitution against the same word preceding which, a word was inserted earlier. Those cases are handled in this manner `<ul>ins word</ul> subs word in yellow (correct word in yellow)`.
+5. This also means that substitution doesn't happen on the index of a deleted word since the word score for the deleted word would be 0, thus causing it to be included in the 'ref_text_word' portion of <"ref_text_word_no_prefix"-"ref_text_word":"substituted_word">. The same goes for insertions.

@@ -76,7 +76,7 @@ const FormattedTextDisplay: React.FC<FormattedTextProps> = ({
         // I just noticed that one response returned an insertion and a
         // substitution at the same index, this means we need to handle
         // more cases. This should ideally display
-        // <ul>ins word</ul> ins/subs word in yellow (correct word in yellow)
+        // <ul>ins word</ul> subs word in yellow (correct word in yellow)
         // Fortunately you cannot subs and del a word simultaneously or
         // ins something before a word that was del'd.
         return (
