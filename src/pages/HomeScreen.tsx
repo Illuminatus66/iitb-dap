@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
@@ -14,6 +14,7 @@ import {
   Paper,
   InputAdornment,
   IconButton,
+  ButtonGroup,
 } from "@mui/material";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
@@ -22,8 +23,11 @@ import ClearIcon from "@mui/icons-material/Clear";
 import Header from "../components/Header";
 import AudioUploadModal from "../components/AudioUploadModal";
 import { useAppDispatch, useAppSelector } from "../hooks";
-import { selectReports } from "../reducers/reportsSlice";
-import { fetch_all_reports, trigger_report_generation } from "../actions/reportActions";
+import { selectReports, selectReportsLoading } from "../reducers/reportsSlice";
+import {
+  fetch_all_reports,
+  trigger_report_generation,
+} from "../actions/reportActions";
 import { FetchReportsResponse, ReportGenerationResponse } from "../api";
 
 dayjs.extend(utc);
@@ -71,17 +75,23 @@ const HomeScreen = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const students = useAppSelector(selectReports);
+  const loading = useAppSelector(selectReportsLoading);
   const [open, setOpen] = useState<boolean>(false);
-  const [loadingStates, setLoadingStates] = useState<{
-    [_id: string]: boolean;
-  }>({});
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [previouslyEnteredStudentData, setPreviouslyEnteredStudentData] =
     useState<PreviouslyEnteredStudentData | null>(null);
+  const reportsFetched = useRef(false);
 
-  useEffect (() => {
+  useEffect(() => {
+    if (!reportsFetched.current) {
+      dispatch(fetch_all_reports());
+      reportsFetched.current = true;
+    }
+  }, [dispatch]);
+
+  const handleRefreshReports = () => {
     dispatch(fetch_all_reports());
-  }, [dispatch])
+  };
 
   //Applies the search query
   const filteredStudents = students.filter((student) =>
@@ -114,22 +124,19 @@ const HomeScreen = () => {
   const handleGenerateReport = async (student: FetchReportsResponse) => {
     if (!student.audio_url) return;
 
-    // Sets loading for student with a particular _id
-    setLoadingStates((prev) => ({ ...prev, [student._id]: true }));
-
     try {
-      dispatch(trigger_report_generation({
-        _id: student._id,
-        reference_text_id: "EN-OL-RC-247-1",
-        audio_url: student.audio_url,
-        request_time: dayjs()
-          .tz("Asia/Kolkata")
-          .format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
-      }));
+      dispatch(
+        trigger_report_generation({
+          _id: student._id,
+          reference_text_id: "EN-OL-RC-247-1",
+          audio_url: student.audio_url,
+          request_time: dayjs()
+            .tz("Asia/Kolkata")
+            .format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
+        })
+      );
     } catch (error) {
       console.error("Error generating report:", error);
-    } finally {
-      setLoadingStates((prev) => ({ ...prev, [student._id]: false }));
     }
   };
 
@@ -145,6 +152,7 @@ const HomeScreen = () => {
             alignItems: "center",
             marginBottom: "20px",
             gap: "10px",
+            justifyContent: "space-between",
           }}
         >
           <TextField
@@ -152,7 +160,7 @@ const HomeScreen = () => {
             placeholder="Search for a student's name"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            style={{ flex: 1, maxWidth: "300px" }}
+            style={{ display: "flex", flex: 1, maxWidth: "400px" }}
             slotProps={{
               input: {
                 endAdornment: searchQuery && (
@@ -165,9 +173,24 @@ const HomeScreen = () => {
               },
             }}
           />
-          <Button variant="contained" onClick={() => setOpen(true)}>
-            +Create New
-          </Button>
+          <ButtonGroup variant="contained">
+            <Button
+              variant="contained"
+              onClick={() => setOpen(true)}
+              style={{ backgroundColor: "black" }}
+            >
+              +Create New
+            </Button>
+
+            <Button
+              variant="contained"
+              onClick={handleRefreshReports}
+              disabled={loading}
+              style={{ backgroundColor: "black" }}
+            >
+              {loading ? "Refreshing..." : "Refresh Entries"}
+            </Button>
+          </ButtonGroup>
         </div>
 
         {/* Student Details Table */}
@@ -291,12 +314,10 @@ const HomeScreen = () => {
                               <Button
                                 variant="contained"
                                 color="primary"
-                                disabled={loadingStates[student._id]}
+                                disabled={loading}
                                 onClick={() => handleGenerateReport(student)}
                               >
-                                {loadingStates[student._id]
-                                  ? "Processing"
-                                  : "Generate Report"}
+                                {loading ? "Processing" : "Generate Report"}
                               </Button>
                             )
                           ) : (
