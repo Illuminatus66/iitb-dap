@@ -80,8 +80,8 @@ const FormattedTextDisplay: React.FC<FormattedTextProps> = ({
         // substitution at the same index, this means we need to handle
         // more cases. This should ideally display
         // <ul>ins word</ul> ins/subs word in yellow (correct word in yellow)
-        // Fortunately you cannot subs and del a word simultaneously since it
-        // would
+        // Fortunately you cannot subs and del a word simultaneously or
+        // ins something before a word that was del'd.
         return (
           <span key={index}>
             {isInserted && isSubstituted ? (
@@ -108,7 +108,10 @@ const FormattedTextDisplay: React.FC<FormattedTextProps> = ({
                   marginRight: "5px",
                 }}
               >
-                {insertedWords[index].insertedWord} <span>{word}</span>
+                {insertedWords[index].insertedWord}{" "}
+                <span style={{ textDecoration: "none", color: "black" }}>
+                  {word}
+                </span>
               </span>
             ) : isSubstituted ? (
               <span style={{ color: "#FFC300", marginRight: "5px" }}>
