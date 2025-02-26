@@ -14,8 +14,8 @@ const FormattedTextDisplay: React.FC<FormattedTextProps> = ({
   subs_details,
   correct_text,
 }) => {
-  // Tokenizing actualText
-  const actualWords = correct_text
+  // Tokenizing correct_text
+  const correctWords = correct_text
     ? correct_text.split(",").map((pair) => {
         const [index, word] = pair.split("-");
         return { index: parseInt(index) - 1, word };
@@ -68,43 +68,68 @@ const FormattedTextDisplay: React.FC<FormattedTextProps> = ({
         padding: "10px",
         fontSize: "1.1rem",
         fontFamily: "Arial, sans-serif",
-        whiteSpace: 'normal',
-        wordBreak: 'break-word',
+        whiteSpace: "normal",
       }}
     >
-      {actualWords.map(({ index, word }) => (
-        <span key={index}>
-          {insertedWords[index] && (
-            <span
-              style={{
-                textDecoration: "underline",
-                color: "black",
-                marginRight: "5px",
-              }}
-            >
-              {insertedWords[index].insertedWord}
-            </span>
-          )}
+      {correctWords.map(({ index, word }) => {
+        const isInserted = insertedWords[index];
+        const isSubstituted = substitutedWords[index];
+        const isDeleted = deletedWords[index];
 
-          {deletedWords[index] ? (
-            <span
-              style={{
-                color: "black",
-                textDecoration: "line-through",
-                marginRight: "5px",
-              }}
-            >
-              {deletedWords[index]}
-            </span>
-          ) : substitutedWords[index] ? (
-            <span style={{ color: "#FFC300", marginRight: "5px" }}>
-              {substitutedWords[index].substitutedWord}{' '}(<span>{word}</span>)
-            </span>
-          ) : (
-            <span style={{ color: "green", marginRight: "5px" }}>{word}</span>
-          )}
-        </span>
-      ))}
+        // I just noticed that one response returned an insertion and a
+        // substitution at the same index, this means we need to handle
+        // more cases. This should ideally display
+        // <ul>ins word</ul> ins/subs word in yellow (correct word in yellow)
+        // Fortunately you cannot subs and del a word simultaneously since it
+        // would
+        return (
+          <span key={index}>
+            {isInserted && isSubstituted ? (
+              <>
+                <span
+                  style={{
+                    textDecoration: "underline",
+                    color: "black",
+                    marginRight: "5px",
+                  }}
+                >
+                  {insertedWords[index].insertedWord}{" "}
+                </span>
+                <span style={{ color: "#FFC300", marginRight: "5px" }}>
+                  {substitutedWords[index].substitutedWord} (<span>{word}</span>
+                  )
+                </span>
+              </>
+            ) : isInserted ? (
+              <span
+                style={{
+                  textDecoration: "underline",
+                  color: "black",
+                  marginRight: "5px",
+                }}
+              >
+                {insertedWords[index].insertedWord} <span>{word}</span>
+              </span>
+            ) : isSubstituted ? (
+              <span style={{ color: "#FFC300", marginRight: "5px" }}>
+                {substitutedWords[index].substitutedWord} (<span>{word}</span>)
+              </span>
+            ) : isDeleted ? (
+              <span
+                style={{
+                  color: "black",
+                  textDecoration: "line-through",
+                  marginRight: "5px",
+                }}
+              >
+                {deletedWords[index]}
+              </span>
+            ) : (
+              <span style={{ color: "green", marginRight: "5px" }}>{word}</span>
+            )}
+          </span>
+        );
+      })}
     </Box>
   );
 };
