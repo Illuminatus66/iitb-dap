@@ -49,6 +49,7 @@ export interface AudioUploadResponse {
   audio_url: string;
 }
 export interface DetailsUploadRequest {
+  _id?: string;
   uid: string;
   name: string;
   story: string;

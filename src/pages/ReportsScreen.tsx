@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import "dayjs/locale/en-gb";
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
 import {
   Button,
   Card,
@@ -253,14 +253,15 @@ const ReportsScreen = () => {
                           >
                             View Report
                           </Button>
-                          Generated on{" "}
-                          {new Date(report.response_time).toLocaleDateString(
-                            "en-GB"
-                          )}{" "}
-                          at{" "}
-                          {new Date(report.response_time).toLocaleTimeString(
-                            "en-GB"
-                          )}
+                          <div style={{ marginTop: 8 }}>
+                            {new Date(report.response_time).toLocaleDateString(
+                              "en-GB"
+                            )}{" "}
+                            at{" "}
+                            {new Date(report.response_time).toLocaleTimeString(
+                              "en-GB"
+                            )}
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))
@@ -277,7 +278,7 @@ const ReportsScreen = () => {
           </CardContent>
         </Card>
       </div>
-      
+
       {/* Audio Playback Modal */}
       <Dialog open={!!selectedAudio} onClose={() => setSelectedAudio(null)}>
         <DialogTitle>

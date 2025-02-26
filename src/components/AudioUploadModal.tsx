@@ -74,18 +74,26 @@ const AudioUploadModal: React.FC<AudioUploadModalProps> = ({
         "audio/wav",
         "audio/ogg",
         "audio/flac",
-        "audio/mp4",
+        "audio/mp3",
+        "audio/opus",
+        "audio/webm",
+        "audio/weba",
+        "audio/m4a",
+        "audio/oga",
+        "audio/mid",
+        "audio/aiff",
+        "audio/wma",
       ];
 
       if (!allowedTypes.includes(selectedFile.type)) {
         alert(
-          "Invalid file type! Please upload an audio file (MP3, WAV, OGG, FLAC, MP4)."
+          "Invalid file type! Please upload an audio file (MP3, WAV, OGG, FLAC, OPUS, WEBA, M4A, OGA, MID, AIFF, WMA, WEBM)."
         );
         e.target.value = "";
         return;
       }
 
-      setFile(selectedFile);
+      setFile(e.target.files[0]);
     } else {
       setFile(null);
     }
@@ -180,6 +188,7 @@ const AudioUploadModal: React.FC<AudioUploadModalProps> = ({
       // Audio not uploaded, dispatch upload_details_without_audio.
       const detailsUploadData: DetailsUploadRequest = {
         ...commonPayload,
+        ...(mongoID && { _id: mongoID }),
       };
       dispatch(upload_details_without_audio(detailsUploadData));
     }
@@ -239,7 +248,7 @@ const AudioUploadModal: React.FC<AudioUploadModalProps> = ({
           You can choose to upload an Audio file now or keep it empty to upload
           later
         </DialogContentText>
-        <input type="file" accept="audio/" onChange={handleFileChange} />
+        <input type="file" accept="audio/*" onChange={handleFileChange} />
         <Button
           variant="contained"
           onClick={handleSubmitFromModal}
