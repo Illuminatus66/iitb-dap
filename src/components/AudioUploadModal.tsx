@@ -54,6 +54,7 @@ const AudioUploadModal: React.FC<AudioUploadModalProps> = ({
 
   useEffect(() => {
     if (open) {
+      setFile(null);
       setLoading(false);
       setMongoID(defaultData?._id || "");
       setStudentName(defaultData?.studentName || "");
@@ -66,33 +67,6 @@ const AudioUploadModal: React.FC<AudioUploadModalProps> = ({
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      const selectedFile = e.target.files[0];
-      if (!file) return;
-
-      const allowedTypes = [
-        "audio/mpeg",
-        "audio/wav",
-        "audio/ogg",
-        "audio/flac",
-        "audio/mp3",
-        "audio/opus",
-        "audio/webm",
-        "audio/weba",
-        "audio/m4a",
-        "audio/oga",
-        "audio/mid",
-        "audio/aiff",
-        "audio/wma",
-      ];
-
-      if (!allowedTypes.includes(selectedFile.type)) {
-        alert(
-          "Invalid file type! Please upload an audio file (MP3, WAV, OGG, FLAC, OPUS, WEBA, M4A, OGA, MID, AIFF, WMA, WEBM)."
-        );
-        e.target.value = "";
-        return;
-      }
-
       setFile(e.target.files[0]);
     } else {
       setFile(null);
