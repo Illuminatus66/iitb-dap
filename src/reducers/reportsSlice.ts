@@ -45,7 +45,7 @@ const reportsSlice = createSlice({
       )
       .addCase(fetch_all_reports.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Failed to fetch reports";
+        state.error = action.error.message || "Failed to fetch reports";
       })
       .addCase(trigger_report_generation.pending, (state) => {
         state.loading = true;
@@ -101,10 +101,10 @@ const reportsSlice = createSlice({
 });
 
 export const selectReports = (state: RootState) =>
-  state.reports;
+  state.reports.reports;
 export const selectReportsLoading = (state: RootState) =>
-  state.loading;
+  state.reports.loading;
 export const selectReportsError = (state: RootState) =>
-  state.error;
+  state.reports.error;
 
 export default reportsSlice.reducer;

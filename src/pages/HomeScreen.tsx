@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
@@ -21,9 +21,9 @@ import timezone from "dayjs/plugin/timezone";
 import ClearIcon from "@mui/icons-material/Clear";
 import Header from "../components/Header";
 import AudioUploadModal from "../components/AudioUploadModal";
-import { useAppSelector } from "../hooks";
+import { useAppDispatch, useAppSelector } from "../hooks";
 import { selectReports } from "../reducers/reportsSlice";
-import { trigger_report_generation } from "../actions/reportActions";
+import { fetch_all_reports, trigger_report_generation } from "../actions/reportActions";
 import { FetchReportsResponse, ReportGenerationResponse } from "../api";
 
 dayjs.extend(utc);
@@ -69,6 +69,7 @@ function isReportDetailsComplete(
 
 const HomeScreen = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const students = useAppSelector(selectReports);
   const [open, setOpen] = useState<boolean>(false);
   const [loadingStates, setLoadingStates] = useState<{
@@ -77,6 +78,10 @@ const HomeScreen = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [previouslyEnteredStudentData, setPreviouslyEnteredStudentData] =
     useState<PreviouslyEnteredStudentData | null>(null);
+
+  useEffect (() => {
+    dispatch(fetch_all_reports());
+  }, [dispatch])
 
   //Applies the search query
   const filteredStudents = students.filter((student) =>
@@ -113,14 +118,14 @@ const HomeScreen = () => {
     setLoadingStates((prev) => ({ ...prev, [student._id]: true }));
 
     try {
-      trigger_report_generation({
+      dispatch(trigger_report_generation({
         _id: student._id,
         reference_text_id: "EN-OL-RC-247-1",
         audio_url: student.audio_url,
         request_time: dayjs()
           .tz("Asia/Kolkata")
           .format("YYYY-MM-DDTHH:mm:ss.SSSZ"),
-      });
+      }));
     } catch (error) {
       console.error("Error generating report:", error);
     } finally {

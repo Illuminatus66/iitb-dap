@@ -15,16 +15,9 @@ import {
   ReportGenerationResponse,
 } from "../api";
 
-interface ReportsState {
-  reports: FetchReportsResponse[];
-  loading: boolean;
-  error: string | null;
-}
-
 export const fetch_all_reports = createAsyncThunk<
   FetchReportsResponse[],
-  void,
-  { state: ReportsState; rejectValue: string }
+  void
 >("reports/fetch_all_reports", async (_, { rejectWithValue }) => {
   try {
     const response = await fetchAllReports();
@@ -38,8 +31,7 @@ export const fetch_all_reports = createAsyncThunk<
 
 export const trigger_report_generation = createAsyncThunk<
   ReportGenerationResponse,
-  ReportGenerationRequest,
-  { state: ReportsState; rejectValue: string }
+  ReportGenerationRequest
 >(
   "reports/trigger_report_generation",
   async (reportGenerationData, { rejectWithValue }) => {
@@ -56,8 +48,7 @@ export const trigger_report_generation = createAsyncThunk<
 
 export const upload_audio = createAsyncThunk<
   AudioUploadResponse,
-  AudioUploadRequest,
-  { state: ReportsState; rejectValue: string }
+  AudioUploadRequest
 >("reports/upload_audio", async (audioUploadData, { rejectWithValue }) => {
   try {
     const response = await uploadAudio(audioUploadData);
@@ -72,8 +63,7 @@ export const upload_audio = createAsyncThunk<
 
 export const upload_details_without_audio = createAsyncThunk<
   DetailsUploadResponse,
-  DetailsUploadRequest,
-  { state: ReportsState; rejectValue: string }
+  DetailsUploadRequest
 >(
   "reports/upload_details_without_audio",
   async (detailsUploadData, { rejectWithValue }) => {
