@@ -54,6 +54,7 @@ const reportsSlice = createSlice({
       .addCase(
         trigger_report_generation.fulfilled,
         (state, action: PayloadAction<ReportGenerationResponse>) => {
+          state.reports = state.reports.filter(report => report._id !== action.payload._id);
           state.reports.push(action.payload);
           state.loading = false;
           state.error = null;
@@ -70,6 +71,7 @@ const reportsSlice = createSlice({
       .addCase(
         upload_audio.fulfilled,
         (state, action: PayloadAction<AudioUploadResponse>) => {
+          state.reports = state.reports.filter(report => report._id !== action.payload._id);
           state.reports.push(action.payload);
           state.loading = false;
           state.error = null;
@@ -87,6 +89,7 @@ const reportsSlice = createSlice({
       .addCase(
         upload_details_without_audio.fulfilled,
         (state, action: PayloadAction<DetailsUploadResponse>) => {
+          state.reports = state.reports.filter(report => report._id !== action.payload._id);
           state.reports.push(action.payload);
           state.loading = false;
           state.error = null;

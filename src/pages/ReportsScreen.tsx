@@ -148,9 +148,9 @@ const ReportsScreen = () => {
               value={startDate}
               onChange={(newDate) => {
                 if (newDate && newDate.isValid()) {
-                  setEndDate(newDate);
+                  setStartDate(newDate);
                 } else {
-                  setEndDate(null);
+                  setStartDate(null);
                 }
               }}
               sx={{ width: 250 }}

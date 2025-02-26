@@ -42,38 +42,28 @@ const DetailsScreen = () => {
           </Typography>
           <Typography variant="h6" fontWeight="bold">
             Report generated on{" "}
-            {new Date(reportDetails.response_time).toLocaleDateString("en-GB")} at{" "}
+            {new Date(reportDetails.response_time).toLocaleDateString("en-GB")}{" "}
+            at{" "}
             {new Date(reportDetails.response_time).toLocaleTimeString("en-GB")}
           </Typography>
         </CardContent>
       </Card>
 
-      {/* Scrollable but Immutable text box */}
-      <Box
-        sx={{
-          width: "80%",
-          height: "25vh",
-          margin: "auto",
-          padding: "15px",
-          border: "1px solid #ccc",
-          borderRadius: "5px",
-          backgroundColor: "#f9f9f9",
-          overflowY: "auto",
-          whiteSpace: "pre-wrap",
-        }}
-      >
-        <FormattedTextDisplay
-          decoded_text={reportDetails.decoded_text}
-          del_details={reportDetails.del_details}
-          ins_details={reportDetails.ins_details}
-          subs_details={reportDetails.subs_details}
-        />
-      </Box>
+      <FormattedTextDisplay
+        del_details={reportDetails.del_details}
+        ins_details={reportDetails.ins_details}
+        subs_details={reportDetails.subs_details}
+        correct_text={reportDetails.correct_text}
+      />
 
       {/* Audio Player */}
       {reportDetails.audio_url && (
         <Box sx={{ width: "80%", margin: "20px auto", textAlign: "center" }}>
-          <audio controls src={reportDetails.audio_url} style={{ width: "50%" }}>
+          <audio
+            controls
+            src={reportDetails.audio_url}
+            style={{ width: "50%" }}
+          >
             Your browser does not support the audio element.
           </audio>
         </Box>
@@ -88,18 +78,23 @@ const DetailsScreen = () => {
           <TableBody>
             <TableRow>
               <TableCell>
-                <Typography sx={{fontWeight:"bold", fontSize: 15}}>Total Words</Typography>
+                <Typography sx={{ fontWeight: "bold", fontSize: 15 }}>
+                  Total Words
+                </Typography>
               </TableCell>
               <TableCell>
-                <Typography sx={{fontWeight:"bold", fontSize: 15}}>
+                <Typography sx={{ fontWeight: "bold", fontSize: 15 }}>
                   {reportDetails.no_words}
                 </Typography>
               </TableCell>
               <TableCell>
-                <Typography sx={{fontWeight:"bold", fontSize: 12}}> Number of Correct Words</Typography>
+                <Typography sx={{ fontWeight: "bold", fontSize: 12 }}>
+                  {" "}
+                  Number of Correct Words
+                </Typography>
               </TableCell>
               <TableCell>
-                <Typography sx={{fontWeight:"bold", fontSize: 15}}>
+                <Typography sx={{ fontWeight: "bold", fontSize: 15 }}>
                   {reportDetails.no_corr}
                 </Typography>
               </TableCell>
@@ -107,18 +102,22 @@ const DetailsScreen = () => {
 
             <TableRow>
               <TableCell>
-                <Typography sx={{fontWeight:"bold", fontSize: 12}}>Number of Miscues</Typography>
+                <Typography sx={{ fontWeight: "bold", fontSize: 12 }}>
+                  Number of Miscues
+                </Typography>
               </TableCell>
               <TableCell>
-                <Typography sx={{fontWeight:"bold", fontSize: 15}}>
+                <Typography sx={{ fontWeight: "bold", fontSize: 15 }}>
                   {reportDetails.no_miscue}
                 </Typography>
               </TableCell>
               <TableCell>
-                <Typography sx={{fontWeight:"bold", fontSize: 12}}>Number of Substituted Words</Typography>
+                <Typography sx={{ fontWeight: "bold", fontSize: 12 }}>
+                  Number of Substituted Words
+                </Typography>
               </TableCell>
               <TableCell>
-                <Typography sx={{fontWeight:"bold", fontSize: 15}}>
+                <Typography sx={{ fontWeight: "bold", fontSize: 15 }}>
                   {reportDetails.no_subs}
                 </Typography>
               </TableCell>
@@ -126,35 +125,45 @@ const DetailsScreen = () => {
 
             <TableRow>
               <TableCell>
-                <Typography sx={{fontWeight:"bold", fontSize: 15}}>Insertions</Typography>
+                <Typography sx={{ fontWeight: "bold", fontSize: 15 }}>
+                  Insertions
+                </Typography>
               </TableCell>
               <TableCell>
-                <Typography sx={{fontWeight:"bold", fontSize: 15}}>
+                <Typography sx={{ fontWeight: "bold", fontSize: 15 }}>
                   {reportDetails.no_ins}
                 </Typography>
               </TableCell>
               <TableCell>
-                <Typography sx={{fontWeight:"bold", fontSize: 12}}>Words Correct Per Minute</Typography>
+                <Typography sx={{ fontWeight: "bold", fontSize: 12 }}>
+                  Words Correct Per Minute
+                </Typography>
               </TableCell>
               <TableCell>
-                <Typography sx={{fontWeight:"bold", fontSize: 15}}>{reportDetails.wcpm}</Typography>
+                <Typography sx={{ fontWeight: "bold", fontSize: 15 }}>
+                  {reportDetails.wcpm}
+                </Typography>
               </TableCell>
             </TableRow>
 
             <TableRow>
               <TableCell>
-                <Typography sx={{fontWeight:"bold", fontSize: 15}}>Speaking Rate</Typography>
+                <Typography sx={{ fontWeight: "bold", fontSize: 15 }}>
+                  Speaking Rate
+                </Typography>
               </TableCell>
               <TableCell>
-                <Typography sx={{fontWeight:"bold", fontSize: 15}}>
+                <Typography sx={{ fontWeight: "bold", fontSize: 15 }}>
                   {reportDetails.speech_rate}syll/sec
                 </Typography>
               </TableCell>
               <TableCell>
-                <Typography sx={{fontWeight:"bold", fontSize: 12}}>Pronunciation Score</Typography>
+                <Typography sx={{ fontWeight: "bold", fontSize: 12 }}>
+                  Pronunciation Score
+                </Typography>
               </TableCell>
               <TableCell>
-                <Typography sx={{fontWeight:"bold", fontSize: 15}}>
+                <Typography sx={{ fontWeight: "bold", fontSize: 15 }}>
                   {reportDetails.pron_score}
                 </Typography>
               </TableCell>

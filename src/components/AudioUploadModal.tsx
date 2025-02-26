@@ -66,7 +66,26 @@ const AudioUploadModal: React.FC<AudioUploadModalProps> = ({
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      setFile(e.target.files[0]);
+      const selectedFile = e.target.files[0];
+      if (!file) return;
+
+      const allowedTypes = [
+        "audio/mpeg",
+        "audio/wav",
+        "audio/ogg",
+        "audio/flac",
+        "audio/mp4",
+      ];
+
+      if (!allowedTypes.includes(selectedFile.type)) {
+        alert(
+          "Invalid file type! Please upload an audio file (MP3, WAV, OGG, FLAC, MP4)."
+        );
+        e.target.value = "";
+        return;
+      }
+
+      setFile(selectedFile);
     } else {
       setFile(null);
     }
@@ -97,13 +116,15 @@ const AudioUploadModal: React.FC<AudioUploadModalProps> = ({
       const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
       // Duration should be less than a minute
       if (audioBuffer.duration >= 60) {
-        alert(`Audio must be less than 1 minute, The duration of this audio is ${audioBuffer.duration}`);
+        alert(
+          `Audio must be less than 1 minute, The duration of this audio is ${audioBuffer.duration}`
+        );
         audioContext.close();
         setLoading(false);
         return false;
       }
       // Sample rate should be exactly 16kHz according to the documentation
-      // Apparently the AudioContext defaults to its own preset sampling rate
+      // Apparently the AudioContext defaults to its own preset sampling rate which is 48kHz
       // if (audioBuffer.sampleRate !== 16000) {
       //   alert(`Audio must have a 16kHz sampling rate,${audioBuffer.sampleRate}, ${audioBuffer.numberOfChannels}`);
       //   audioContext.close();
@@ -218,9 +239,13 @@ const AudioUploadModal: React.FC<AudioUploadModalProps> = ({
           You can choose to upload an Audio file now or keep it empty to upload
           later
         </DialogContentText>
-        <input type="file" accept="" onChange={handleFileChange} />
-        <Button variant="contained" onClick={handleSubmitFromModal} disabled={loading}>
-          {loading? 'Processing' : 'Submit'}
+        <input type="file" accept="audio/" onChange={handleFileChange} />
+        <Button
+          variant="contained"
+          onClick={handleSubmitFromModal}
+          disabled={loading}
+        >
+          {loading ? "Processing" : "Submit"}
         </Button>
       </DialogContent>
     </Dialog>

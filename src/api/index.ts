@@ -27,6 +27,7 @@ export interface FetchReportsResponse {
   pron_score?: number;
   percent_attempt?: number;
   audio_url?: string;
+  actual_text?: string;
   story: string;
   request_time?: string;
   response_time?: string;
@@ -89,6 +90,7 @@ export interface ReportGenerationResponse {
   pron_score: number;
   percent_attempt: number;
   audio_url: string;
+  correct_text: string;
   story: string;
   request_time: string;
   response_time: string;
@@ -100,11 +102,15 @@ export const fetchAllReports = () =>
 export const uploadAudio = (audioUploadData: AudioUploadRequest) =>
   API.post<AudioUploadResponse>("reports/upload-audio", audioUploadData);
 
-export const uploadDetailsWithoutAudio = (detailsUploadData: DetailsUploadRequest) =>
+export const uploadDetailsWithoutAudio = (
+  detailsUploadData: DetailsUploadRequest
+) =>
   API.post<DetailsUploadResponse>("reports/upload-details", detailsUploadData);
 
-export const triggerReportGeneration = (reportGenerationData: ReportGenerationRequest) =>
-  API.post<ReportGenerationResponse>("reports/generate-report", reportGenerationData);
-
-
-
+export const triggerReportGeneration = (
+  reportGenerationData: ReportGenerationRequest
+) =>
+  API.post<ReportGenerationResponse>(
+    "reports/generate-report",
+    reportGenerationData
+  );
