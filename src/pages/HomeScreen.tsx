@@ -85,6 +85,7 @@ const HomeScreen = () => {
   const [previouslyEnteredStudentData, setPreviouslyEnteredStudentData] =
     useState<PreviouslyEnteredStudentData | null>(null);
   const reportsFetched = useAppSelector(selectIfReportsFetched);
+  const [loadingStates, setLoadingStates] = useState<{ [key: string]: boolean }>({});
 
   useEffect(() => {
     if (!reportsFetched) {
@@ -127,6 +128,8 @@ const HomeScreen = () => {
   const handleGenerateReport = async (student: FetchReportsResponse) => {
     if (!student.audio_url) return;
 
+    setLoadingStates((prev) => ({ ...prev, [student._id]: true }));
+
     try {
       dispatch(
         trigger_report_generation({
@@ -140,6 +143,8 @@ const HomeScreen = () => {
       );
     } catch (error) {
       console.error("Error generating report:", error);
+    } finally {
+      setLoadingStates((prev) => ({ ...prev, [student._id]: false }));
     }
   };
 
@@ -321,10 +326,10 @@ const HomeScreen = () => {
                               <Button
                                 variant="contained"
                                 color="primary"
-                                disabled={loading}
+                                disabled={loadingStates[student._id]}
                                 onClick={() => handleGenerateReport(student)}
                               >
-                                {loading ? "Processing" : "Generate Report"}
+                                {loadingStates[student._id] ? "Processing" : "Generate Report"}
                               </Button>
                             )
                           ) : (
